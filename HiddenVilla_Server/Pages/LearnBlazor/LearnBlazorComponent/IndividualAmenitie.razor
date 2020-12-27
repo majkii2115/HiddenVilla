@@ -1,0 +1,22 @@
+﻿@using Model
+
+<div @onclick="(args) => AmenityClick(args, Amenity.Name)" class="bg-light m-3 border col-5 offset-1">
+    <h4>@Amenity.Id - @Amenity.Name</h4>  
+    <p>
+        @Amenity.Description
+    </p>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnAmenityClick { get; set; }
+
+
+    protected async Task AmenityClick(MouseEventArgs e, string amenityName)
+    {
+        await OnAmenityClick.InvokeAsync(amenityName);
+    }
+
+    [Parameter]
+    public BlazorAmenity Amenity { get; set; }
+}

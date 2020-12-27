@@ -1,0 +1,80 @@
+﻿@page "/lifeCycle"
+@using System.Threading
+
+<h1>Lifecycle</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<br />
+@count
+<button class="btn-block" @onclick="StartCountdown">Start countdown</button>
+<br />
+<div class="border bg-secondary">
+    <LifeCycleComponent CountValue="@currentCount"></LifeCycleComponent>
+</div>
+<br />
+
+@foreach (var item in eventType)
+{
+    @item
+    <br />
+}
+
+
+@code {
+    private int count = 5;
+    private int currentCount = 0;
+    List<string> eventType = new List<string>();
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    void StartCountdown()
+    {
+        var timer = new Timer(TimeCallBack, null, 1000, 1000);
+    }
+
+    void TimeCallBack(object state)
+    {
+        if (count > 0)
+        {
+            count--;
+            InvokeAsync(StateHasChanged);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        eventType.Add("child - Initialized ASYNC");
+        await Task.Delay(1000);
+    }
+
+    protected override void OnInitialized()
+    {
+        eventType.Add("Initialized SYNC");
+    }
+
+    protected override void OnParametersSet()
+    {
+        eventType.Add("ParametersSet SYNC");
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        eventType.Add("ParametersSet ASYNC");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        eventType.Add("OnAfterRender SYNC");
+    }
+
+    protected override bool ShouldRender()
+    {
+        eventType.Add("ShouldRender SYNC");
+        return true;
+    }
+}

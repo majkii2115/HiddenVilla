@@ -1,0 +1,45 @@
+﻿<h1>Lifecycle</h1>
+
+@foreach (var item in eventType)
+{
+    @item
+    <br />
+}
+
+@code {
+    [Parameter]
+    public int CountValue { get; set; }
+    List<string> eventType = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        eventType.Add("child - Initialized ASYNC");
+        await Task.Delay(1000);
+    }
+
+    protected override void OnInitialized()
+    {
+        eventType.Add("child - Initialized SYNC");
+    }
+
+    protected override void OnParametersSet()
+    {
+        eventType.Add("child - ParametersSet SYNC");
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        eventType.Add("child - ParametersSet ASYNC");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        eventType.Add("child - OnAfterRender SYNC");
+    }
+
+    protected override bool ShouldRender()
+    {
+        eventType.Add("child - ShouldRender SYNC");
+        return true;
+    }
+}

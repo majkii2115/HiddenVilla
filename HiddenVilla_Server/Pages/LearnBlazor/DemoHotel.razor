@@ -1,0 +1,115 @@
+﻿@page "/demoHotel"
+@using Model  
+<h3>There are all hotel rooms aviable on the moment!</h3>
+
+<div class="border border-dark" style="background-color:azure">
+    <h2 class="text-center text-primary mt-2">Room list</h2>
+    <span>Rooms selected - @selectedRooms  </span>
+    <div class="row container">
+        @foreach (var room in roomsList)
+        {
+            <IndividualRoom OnRoomCheckboxSelection="RoomSelectionCounterChange" Room="@room"></IndividualRoom>
+        }
+    </div>
+
+    <br />
+    <h2 class="text-center text-primary mt-2">Hotel Amenities</h2>
+    <div class="row container">
+        @foreach (var amenity in amenitiesList)
+        {
+            <IndividualAmenitie OnAmenityClick="DisplayAmenityName" Amenity="@amenity"></IndividualAmenitie>
+        }
+    </div>
+
+    <span>Selected amenity: @selectedAmenityName</span>
+</div>
+
+
+
+
+    @code {
+        int selectedRooms = 0;
+        string selectedAmenityName = "";
+        List<BlazorRoom> roomsList = new List<BlazorRoom>();
+        List<BlazorAmenity> amenitiesList = new List<BlazorAmenity>();
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            #region RoomsList
+            roomsList.Add(new BlazorRoom
+            {
+                Id = 101,
+                RoomName = "Room 1408",
+                IsActive = false,
+                Price = 99.80,
+                RoomProps = new List<BlazorRoomProp> {
+                new Model.BlazorRoomProp{Id=1,Name="Sqrt ft",Value="150"},
+                new Model.BlazorRoomProp{Id=2,Name="Smoke detector",Value="no"}
+            }
+            });
+
+            roomsList.Add(new BlazorRoom
+            {
+                Id = 102,
+                RoomName = "Zodiac's room",
+                IsActive = true,
+                Price = 1000,
+                RoomProps = new List<BlazorRoomProp> {
+                new Model.BlazorRoomProp{Id=1,Name="Sqrt ft",Value="200"},
+                new Model.BlazorRoomProp{Id=2,Name="Bonsai",Value="yes"}
+            }
+            });
+
+            roomsList.Add(new BlazorRoom
+            {
+                Id = 103,
+                RoomName = "Doplhin's room",
+                IsActive = true,
+                Price = 100,
+                RoomProps = new List<BlazorRoomProp> {
+                new Model.BlazorRoomProp{Id=1,Name="Sqrt ft",Value="200"},
+                new Model.BlazorRoomProp{Id=2,Name="Bonsai",Value="yes"}
+            }
+            });
+            #endregion
+
+            #region Amenities
+            amenitiesList.Add(new BlazorAmenity
+            {
+                Id = 111,
+                Name = "Swimming Pool",
+                Description = "In good condition with pure water."
+            }
+            );
+
+            amenitiesList.Add(new BlazorAmenity
+            {
+                Id = 112,
+                Name = "Jacuzzi",
+                Description = "Working."
+            }
+            );
+
+            amenitiesList.Add(new BlazorAmenity
+            {
+                Id = 113,
+                Name = "Dishwasher",
+                Description = "Quiet old, but still works."
+            }
+            );
+            #endregion
+
+        }
+
+        protected void RoomSelectionCounterChange(bool isRoomSelected){
+            if (isRoomSelected) selectedRooms++;
+            else selectedRooms--;
+        }
+
+        protected void DisplayAmenityName(string amenityName) {
+            selectedAmenityName = amenityName;
+        }
+
+    }
