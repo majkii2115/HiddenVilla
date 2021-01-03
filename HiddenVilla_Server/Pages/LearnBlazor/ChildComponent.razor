@@ -1,0 +1,27 @@
+﻿<div>
+    <div class="alert alert-info">@Title</div>
+    <div class="alert alert-light">
+        @if (ChildContent == null)
+        {
+            <span>There's nothing there!</span>
+        }
+        else
+        {
+            <span>@ChildContent</span>
+        }
+    </div>
+    <button class="btn btn-success" @onclick="OnBtnClick">Click me!</button>
+
+    <GrandChildComponent></GrandChildComponent>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnBtnClick { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

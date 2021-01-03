@@ -1,9 +1,12 @@
 ﻿@using Model
 
-<div @onclick="(args) => AmenityClick(args, Amenity.Name)" class="bg-light m-3 border col-5 offset-1">
+<div class="bg-light m-3 border col-5 offset-1" @onclick="(args) => AmenityClick(args, Amenity.Name)">
     <h4>@Amenity.Id - @Amenity.Name</h4>  
     <p>
         @Amenity.Description
+    </p>
+    <p>
+        RF from Parent - @FirstFragment - @SecondFragment
     </p>
 </div>
 
@@ -11,12 +14,19 @@
     [Parameter]
     public EventCallback<string> OnAmenityClick { get; set; }
 
+    [Parameter]
+    public BlazorAmenity Amenity { get; set; }
+
+    [Parameter]
+    public RenderFragment FirstFragment { get; set; }
+
+    [Parameter]
+    public RenderFragment SecondFragment { get; set; }
+
 
     protected async Task AmenityClick(MouseEventArgs e, string amenityName)
     {
         await OnAmenityClick.InvokeAsync(amenityName);
     }
 
-    [Parameter]
-    public BlazorAmenity Amenity { get; set; }
 }

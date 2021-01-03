@@ -4,7 +4,7 @@
 
 <div class="border border-dark" style="background-color:azure">
     <h2 class="text-center text-primary mt-2">Room list</h2>
-    <span>Rooms selected - @selectedRooms  </span>
+    <span>Rooms selected - @selectedRooms</span>
     <div class="row container">
         @foreach (var room in roomsList)
         {
@@ -17,7 +17,10 @@
     <div class="row container">
         @foreach (var amenity in amenitiesList)
         {
-            <IndividualAmenitie OnAmenityClick="DisplayAmenityName" Amenity="@amenity"></IndividualAmenitie>
+            <IndividualAmenitie OnAmenityClick="DisplayAmenityName" Amenity="@amenity">
+                <FirstFragment>#1</FirstFragment>
+                <SecondFragment>#2</SecondFragment>
+            </IndividualAmenitie>
         }
     </div>
 
