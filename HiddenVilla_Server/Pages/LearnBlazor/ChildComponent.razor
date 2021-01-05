@@ -1,4 +1,6 @@
-﻿<div>
+﻿@inject IJSRuntime JsRuntime
+
+<div>
     <div class="alert alert-info">@Title</div>
     <div class="alert alert-light">
         @if (ChildContent == null)
@@ -24,4 +26,8 @@
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    public async Task ShowSwalSucces() {
+        await JsRuntime.SwalSuccess("Success from child!");
+    }
 }
