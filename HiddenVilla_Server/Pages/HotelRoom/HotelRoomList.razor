@@ -2,6 +2,8 @@
 @using Models
 @using Business.Repository.IRepository
 @inject IHotelRoomRepository HotelRoomRepository
+@inject IJSRuntime JsRuntime
+@inject HiddenVilla_Server.Services.IServices.IFileUpload FileUpload
 
 <div class="row mt-4">
     <div class="col-8">
@@ -21,7 +23,7 @@
                     <th>Occupancy</th>
                     <th>Rate</th>
                     <th>Sqft</th>
-                    <th></th>
+                    <th>Other actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,7 +36,10 @@
                             <td>@room.Occupancy</td>
                             <td>@room.RegularRate.ToString("c")</td>
                             <td>@room.SqFt</td>
-                            <td></td>
+                            <td>
+                            <NavLink href="@($"hotel-room/edit/{room.Id}")" class="btn btn-primary">Edit</NavLink>
+                            <button class="btn btn-danger" @onclick="() => HandleDelete(room.Id)">Delete</button>
+                            </td>
                         </tr>
                     }
                 }
@@ -47,11 +52,37 @@
     </div>
 </div>
 
+<DeleteConfirmation ConfirmationChanged="ConfirmDelete_Click"></DeleteConfirmation>
+
 @code {
     private IEnumerable<HotelRoomDTO> HotelRooms { get; set; } = new List<HotelRoomDTO>();
+    private int? deleteRoomId = null;
 
     protected override async Task OnInitializedAsync()
     {
         HotelRooms = await HotelRoomRepository.GetAllHotelRooms();
+    }
+
+    private async Task HandleDelete(int roomId) {
+        deleteRoomId = roomId;
+        await JsRuntime.InvokeVoidAsync("ShowDeleteConfirmationModal");
+    }
+
+    public async Task ConfirmDelete_Click(bool isConfirmed)
+    {
+        if (isConfirmed && deleteRoomId != null)
+        {
+            HotelRoomDTO hotelRoom = await HotelRoomRepository.GetHotelRoom(deleteRoomId.Value);
+            foreach (var image in hotelRoom.HotelRoomImages)
+            {
+                var imageName = image.RoomImageUrl.Replace($"RoomImages/","");
+
+                FileUpload.DeleteFile(imageName);
+            }
+            await HotelRoomRepository.DeleteHotelRoom(deleteRoomId.Value);
+            await JsRuntime.SwalSuccess("Room deleted successfully!");
+            HotelRooms = await HotelRoomRepository.GetAllHotelRooms();
+        }
+        await JsRuntime.InvokeVoidAsync("HideDeleteConfirmationModal");
     }
 }

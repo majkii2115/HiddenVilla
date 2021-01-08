@@ -3,6 +3,8 @@ using Business.Repository;
 using Business.Repository.IRepository;
 using DataAccess.Data;
 using HiddenVilla_Server.Data;
+using HiddenVilla_Server.Services;
+using HiddenVilla_Server.Services.IServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -33,7 +35,10 @@ namespace HiddenVilla_Server
         {
             services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             services.AddScoped<IHotelRoomRepository, HotelRoomRepository>();
+            services.AddScoped<IHotelRoomImagesRepository, HotelRoomImagesRepository>();
+            services.AddScoped<IFileUpload, FileUpload>();
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
