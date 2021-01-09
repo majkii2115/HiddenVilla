@@ -14,15 +14,20 @@ namespace Business.Repository
 {
     public class HotelRoomRepository : IHotelRoomRepository
     {
+        #region Variables
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
+        #endregion
 
+        #region Constructor
         public HotelRoomRepository(ApplicationDbContext db, IMapper mapper)
         {
             _mapper = mapper;
             _db = db;
         }
+        #endregion
 
+        #region Methods
         public async Task<HotelRoomDTO> CreateHotelRoom(HotelRoomDTO hotelRoomDTO)
         {
             HotelRoom hotelRoom = _mapper.Map<HotelRoomDTO, HotelRoom>(hotelRoomDTO);
@@ -123,4 +128,5 @@ namespace Business.Repository
             }
         }
     }
+    #endregion
 }

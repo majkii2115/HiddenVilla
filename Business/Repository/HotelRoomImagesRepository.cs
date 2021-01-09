@@ -13,15 +13,20 @@ namespace Business.Repository
 {
     public class HotelRoomImagesRepository : IHotelRoomImagesRepository 
     {
+        #region Variables
         private readonly ApplicationDbContext _db;
         private readonly IMapper _mapper;
+        #endregion
 
+        #region Constructor
         public HotelRoomImagesRepository(ApplicationDbContext db, IMapper mapper)
         {
             _mapper = mapper;
             _db = db;
         }
+        #endregion
 
+        #region Methods
         public async Task<int> CreateHotelRoomImage(HotelRoomImageDTO imageDTO)
         {
             var image = _mapper.Map<HotelRoomImageDTO, HotelRoomImage>(imageDTO);
@@ -56,5 +61,6 @@ namespace Business.Repository
             return _mapper.Map<IEnumerable<HotelRoomImage>, IEnumerable<HotelRoomImageDTO>>
                 (await _db.HotelRoomImages.Where(x => x.RoomId == roomId).ToListAsync());
         }
+        #endregion
     }
 }

@@ -1,0 +1,58 @@
+﻿@page "/hotel-amenity"
+
+@using Models
+@using Business.Repository.IRepository
+
+@inject IHotelAmenityRepository HotelAmenityRepository
+@inject IJSRuntime JsRuntime
+
+<div class="row mt-2">
+    <div class="col-9">
+        <h4 class="card-title text-primary">Hotel amenities</h4>
+    </div>
+    <div class="col-3 offset">
+        <NavLink href="hotel-amenity/create" class="btn form-control btn-outline-primary">Add new room</NavLink>
+    </div>
+</div>
+
+<table class="mt-3 table">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Timming</th>
+        <th>Icon</th>
+        <th>
+
+        </th>
+    </tr>
+    @if (hotelAmenities.Any())
+    {
+        @foreach (var amenity in hotelAmenities)
+        {
+            <tr>
+                <td>@amenity.Name</td>
+                <td>@amenity.Description</td>
+                <td>@amenity.Timming</td>
+                <td><i class="@amenity.IconStyle"></i></td>
+                <td>
+                    <NavLink class="btn btn-outline-info" href="@($"hotel-amenity/edit/{amenity.Id}")">Edit</NavLink>
+                </td>
+            </tr>
+        }
+    }
+    else 
+    {
+        <tr colspan="5">Sorry, no amenities available</tr>
+    }
+</table>
+
+
+@code {
+    private IEnumerable<HotelAmenityDTO> hotelAmenities;
+
+    protected async override Task OnInitializedAsync()
+    {
+        hotelAmenities = await HotelAmenityRepository.GetAllAmenities();
+    }
+
+}

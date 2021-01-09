@@ -1,0 +1,107 @@
+﻿@page "/hotel-amenity/create"
+@page "/hotel-amenity/edit/{amenityId:int}"
+
+@using Models
+@using Business.Repository.IRepository
+
+@inject IJSRuntime JsRuntime
+@inject IHotelAmenityRepository HotelAmenityRepository
+@inject NavigationManager NavigationManager
+
+<div class="row">
+    <div class="col-12">
+        <h3>@title an amenity!</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <EditForm Model="@hotelAmenityModel" OnValidSubmit="UpsertAmenity">
+                    <DataAnnotationsValidator></DataAnnotationsValidator>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <InputText @bind-Value="@hotelAmenityModel.Name" class="form-control"></InputText>
+                        <ValidationMessage For="() => hotelAmenityModel.Name"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <InputText @bind-Value="@hotelAmenityModel.Description" class="form-control"></InputText>
+                        <ValidationMessage For="() => hotelAmenityModel.Description"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <label>Timming</label>
+                        <InputText @bind-Value="@hotelAmenityModel.Timming" class="form-control"></InputText>
+                        <ValidationMessage For="() => hotelAmenityModel.Timming"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <label>Icon</label> <a href="https://fontawesome.com/icons?d=gallery" target="_blank"><i class="fas fa-question-circle"></i></a>
+                        <InputText @bind-Value="@hotelAmenityModel.IconStyle" class="form-control"></InputText>
+                        <ValidationMessage For="() => hotelAmenityModel.IconStyle"></ValidationMessage>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-success">@title amenity!</button>
+                        <NavLink href="hotel-amenity" class="btn btn-secondary">Go back</NavLink>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int? amenityId { get; set; }
+    private string title = "";
+
+    HotelAmenityDTO hotelAmenityModel = new HotelAmenityDTO();
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (amenityId == null)
+        {
+            //Create
+            title = "Create";
+            hotelAmenityModel = new HotelAmenityDTO();
+
+        }
+        else
+        {
+            //Update
+            title = "Update";
+            hotelAmenityModel = await HotelAmenityRepository.GetAmenityById(amenityId.Value);
+            if (hotelAmenityModel == null)
+            {
+                await JsRuntime.SwalFailure("Invalid amenity id.");
+            }
+        }
+    }
+
+    private async Task UpsertAmenity()
+    {
+        if (title == "Create")
+        {
+            if (await HotelAmenityRepository.IsAmenityNameUnique(hotelAmenityModel.Name))
+            {
+                await HotelAmenityRepository.CreateHotelAmenity(hotelAmenityModel);
+                await JsRuntime.SwalSuccess("Hotel amenity created successfully!");
+                NavigationManager.NavigateTo("hotel-amenity");
+            }
+            else await JsRuntime.SwalFailure("Room name already taken.");
+        }
+        else
+        {
+            if (await HotelAmenityRepository.IsAmenityNameUnique(hotelAmenityModel.Name, amenityId.Value))
+            {
+                var updatedAmenity = await HotelAmenityRepository.UpdateAmenity(hotelAmenityModel, amenityId.Value);
+
+                await JsRuntime.SwalSuccess("Hotel amenity updated successfully!");
+                NavigationManager.NavigateTo("hotel-amenity");
+            }
+            else await JsRuntime.SwalFailure("Room name already taken.");
+        }
+
+    }
+
+}
